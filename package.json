@@ -26,5 +26,5 @@
   "devDependencies": {
     "jasmine": "^2.2.1"
   },
-  "readme": "Twilio VSE\n\nThis is an implementation of TradeHarbor's VoiceSig Express using Twilio (TwiML).\n\nTesting\n\n$ jasmine\n"
+  "readme": "# riff-js\nJavascript library for encoding and decoding RIFF format files.\n"
 }
