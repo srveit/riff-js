@@ -25,6 +25,7 @@
   "homepage": "https://github.com/srveit/riff-js/wiki",
   "devDependencies": {
     "jasmine": "^2.2.1",
+    "jsdoc": "^3.3.1",
     "jshint": "^2.8.0"
   },
   "readme": "# riff-js\nJavascript library for encoding and decoding RIFF format files.\n"
