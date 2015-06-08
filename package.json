@@ -1,0 +1,30 @@
+{
+  "name": "riff",
+  "version": "0.9.0",
+  "description": "JavaScript library to encode and decode RIFF formatted files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./test/run.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:srveit/riff-js.git"
+  },
+  "keywords": [
+    "RIFF",
+    "JavaScript",
+    "WAV",
+    "audio",
+    "library"
+  ],
+  "author": "Stephen R. Veit <srveit@veitconsulting.com> (http://stephenveit.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/srveit/riff-js/issues"
+  },
+  "homepage": "https://github.com/srveit/riff-js/wiki",
+  "devDependencies": {
+    "jasmine": "^2.2.1"
+  },
+  "readme": "Twilio VSE\n\nThis is an implementation of TradeHarbor's VoiceSig Express using Twilio (TwiML).\n\nTesting\n\n$ jasmine\n"
+}
