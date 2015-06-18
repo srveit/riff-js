@@ -4,9 +4,9 @@ var _ = require('lodash'),
 /**
  * The basic data structure in a RIFF file.
  * @constructor
- * @param {string} type - four character type of chunk.
+ * @param {string} type - four character type of chunk. Defaults to "    "
  * @param {string} size - number of bytes in the chunk not
- *   including the chunkType.
+ *   including the chunkType. Defaults to 0
  */
 function BaseChunk(type, size) {
   if (_.isUndefined(type)) {
