@@ -1,10 +1,14 @@
+/**
+ * @file Tests the BaseChunk class
+ * @copyright Stephen R. Veit 2015
+ */
 var BaseChunk = require('../riff/BaseChunk'),
     util = require('util'),
     _ = require('lodash');
 
 describe('BaseChunk', function () {
   var chunk;
-  describe('with type and size parameters', function () {
+  describe('with id and size parameters', function () {
     beforeEach(function (done) {
       chunk = new BaseChunk('RIFF', 5);
       done();
@@ -13,12 +17,12 @@ describe('BaseChunk', function () {
       expect(chunk).not.toBeUndefined();
       done();
     });
-    it('should have a type of "RIFF"', function (done) {
-      expect(chunk.type).toBe('RIFF');
+    it('should have a id of "RIFF"', function (done) {
+      expect(chunk.id).toBe('RIFF');
       done();
     });
     it('should have bufferLength', function (done) {
-      expect(chunk.bufferLength).toBe(8);
+      expect(chunk.bufferLength).toBe(13);
       done();
     });
     it('should have a size', function (done) {
@@ -39,8 +43,8 @@ describe('BaseChunk', function () {
       expect(chunk).not.toBeUndefined();
       done();
     });
-    it('should have a type of "    "', function (done) {
-      expect(chunk.type).toBe('    ');
+    it('should have a id of "    "', function (done) {
+      expect(chunk.id).toBe('    ');
       done();
     });
     it('should have bufferLength', function (done) {
@@ -61,8 +65,8 @@ describe('BaseChunk', function () {
       });
       done();
     });
-    it('should have a type of "    "', function (done) {
-      expect(chunk.type).toBe('    ');
+    it('should have a id of "    "', function (done) {
+      expect(chunk.id).toBe('    ');
       done();
     });
     it('should have bufferLength', function (done) {
@@ -81,8 +85,8 @@ describe('BaseChunk', function () {
         chunk.setContents(contents);
         done();
       });
-      it('should have a type of "RIFF"', function (done) {
-        expect(chunk.type).toBe('RIFF');
+      it('should have a id of "RIFF"', function (done) {
+        expect(chunk.id).toBe('RIFF');
         done();
       });
       it('should have a bufferLength', function (done) {
@@ -126,8 +130,8 @@ describe('BaseChunk', function () {
       expect(chunk.constructor).toBe(MyClass);
       done();
     });
-    it('should have a type', function (done) {
-      expect(chunk.type).toBe('mcla');
+    it('should have a id', function (done) {
+      expect(chunk.id).toBe('mcla');
       done();
     });
   });
