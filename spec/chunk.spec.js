@@ -1,16 +1,16 @@
 /**
- * @file Tests the BaseChunk class
+ * @file Tests the Chunk class
  * @copyright Stephen R. Veit 2015
  */
-var BaseChunk = require('../riff/BaseChunk'),
+var Chunk = require('../riff/chunk'),
     util = require('util'),
     _ = require('lodash');
 
-describe('BaseChunk', function () {
+describe('Chunk', function () {
   var chunk;
   describe('with id and size parameters', function () {
     beforeEach(function (done) {
-      chunk = new BaseChunk('RIFF', 5);
+      chunk = Chunk.createChunk({id: 'RIFF', size: 5});
       done();
     });
     it('should return a chunk', function (done) {
@@ -36,7 +36,7 @@ describe('BaseChunk', function () {
   });
   describe('with no parameters', function () {
     beforeEach(function (done) {
-      chunk = new BaseChunk();
+      chunk = Chunk.createChunk();
       done();
     });
     it('should return a chunk', function (done) {
@@ -99,35 +99,33 @@ describe('BaseChunk', function () {
       });
     });
   });
-  describe('chunkClass', function () {
-    var MyClass = function () {};
+  describe('chunkConstructor', function () {
+    var myConstructor = function () {};
     beforeEach(function (done) {
-      BaseChunk.registerChunkClass('mcla', MyClass);
+      Chunk.registerChunkConstructor('mcla', myConstructor);
       done();
     });
     it('should return the chunk class', function (done) {
-      expect(BaseChunk.chunkClass('mcla')).toBe(MyClass);
+      expect(Chunk.chunkConstructor('mcla')).toBe(myConstructor);
       done();
     });
   });
-  describe('createChunk with returned chunk', function () {
-    var MyClass, chunk;
+  describe('createChunkFromBuffer with returned chunk', function () {
+    var myConstructor, chunk;
     beforeEach(function (done) {
       var contents = new Buffer(12);
       contents.writeUInt32BE(0x52494646, 0);
       contents.write('mcla', 0, 4, 'ascii');
-      MyClass = function () {};
-      util.inherits(MyClass, BaseChunk);
-      BaseChunk.registerChunkClass('mcla', MyClass);
-      chunk = BaseChunk.createChunk(contents);
+      myConstructor = function (spec) {
+        var that = Chunk.createChunk(spec);
+        return that;
+      };
+      Chunk.registerChunkConstructor('mcla', myConstructor);
+      chunk = Chunk.createChunkFromBuffer(contents);
       done();
     });
     it('should exist', function (done) {
       expect(chunk).not.toBeUndefined();
-      done();
-    });
-    it('should have the correct class', function (done) {
-      expect(chunk.constructor).toBe(MyClass);
       done();
     });
     it('should have a id', function (done) {

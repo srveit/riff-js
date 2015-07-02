@@ -2,7 +2,7 @@
  * @file Tests the ListChunk class
  * @copyright Stephen R. Veit 2015
  */
-var BaseChunk = require('../riff/baseChunk'),
+var Chunk = require('../riff/chunk'),
     ListChunk = require('../riff/ListChunk'),
     util = require('util'),
     _ = require('lodash');
@@ -12,9 +12,9 @@ describe('ListChunk', function () {
   describe('new chunk with parameters', function () {
     var chunkOne, chunkTwo;
     beforeEach(function (done) {
-      chunkOne = new BaseChunk('one ');
-      chunkTwo = new BaseChunk('two ');
-      chunk = new ListChunk({
+      chunkOne = Chunk.createChunk({id: 'one '});
+      chunkTwo = Chunk.createChunk({id: 'two '});
+      chunk = ListChunk.createListChunk({
         chunks: [chunkOne, chunkTwo],
         listType: 'WAVE',
         id: 'RIFF'
@@ -42,6 +42,8 @@ describe('ListChunk', function () {
       done();
     });
     it('should have chunks', function (done) {
+      expect(chunk.chunks).not.toBeUndefined();
+      expect(chunk.chunks.length).not.toBe(1);
       expect(chunk.chunks).toEqual([chunkOne, chunkTwo]);
       done();
     });
@@ -63,7 +65,7 @@ describe('ListChunk', function () {
   });
   describe('new chunk with no parameters', function () {
     beforeEach(function (done) {
-      chunk = new ListChunk();
+      chunk = ListChunk.createListChunk();
       done();
     });
     it('should exist', function (done) {
@@ -108,7 +110,7 @@ describe('ListChunk', function () {
     describe('when adding a chunk', function () {
       var subChunk;
       beforeEach(function (done) {
-        subChunk = new BaseChunk('foo ');
+        subChunk = Chunk.createChunk({id: 'foo '});
         chunk.add(subChunk);
         done();
       });

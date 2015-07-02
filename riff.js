@@ -1,4 +1,4 @@
-var BaseChunk = require('./riff/baseChunk');
+var Chunk = require('./riff/chunk');
 
 function Riff() {
 }
@@ -8,7 +8,7 @@ function decodeRiff(fileContents) {
 }
 
 module.exports = {
-  BaseChunk: BaseChunk,
+  Chunk: Chunk,
   decodeRiff: decodeRiff
 };
 
