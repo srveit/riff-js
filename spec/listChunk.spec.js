@@ -2,10 +2,11 @@
  * @file Tests the ListChunk class
  * @copyright Stephen R. Veit 2015
  */
+'use strict';
 var Chunk = require('../riff/chunk'),
-    ListChunk = require('../riff/ListChunk'),
-    util = require('util'),
-    _ = require('lodash');
+  ListChunk = require('../riff/ListChunk'),
+  util = require('util'),
+  _ = require('lodash');
 
 describe('ListChunk', function () {
   var chunk;
@@ -25,8 +26,8 @@ describe('ListChunk', function () {
       expect(chunk).not.toBeUndefined();
       done();
     });
-    it('should have chunkById', function (done) {
-      expect(chunk.chunkById('one ')).toEqual(chunkOne);
+    it('should have chunkWithId', function (done) {
+      expect(chunk.chunkWithId('one ')).toEqual(chunkOne);
       done();
     });
     it('should have a length', function (done) {
@@ -52,14 +53,70 @@ describe('ListChunk', function () {
       done();
     });
     it('should have contents', function (done) {
-      var expectedContents = new Buffer(8);
+      var expectedContents = new Buffer(28);
       expectedContents.write('RIFF', 0, 4, 'ascii');
       expectedContents.writeUInt32BE(20, 4);
       expectedContents.write('WAVE', 8, 4, 'ascii');
+      expectedContents.write('one ', 12, 4, 'ascii');
+      expectedContents.writeUInt32BE(0, 16);
+      expectedContents.write('two ', 20, 4, 'ascii');
+      expectedContents.writeUInt32BE(0, 24);
       expect(chunk.contents.length).toBe(28);
-      // _.forEach(chunk.contents, function (byte, i) {
-      //   expect(byte).toBe(expectedContents[i]);
-      // });
+      _.forEach(chunk.contents, function (byte, i) {
+        expect(byte).toBe(expectedContents[i]);
+      });
+      done();
+    });
+  });
+  describe('createChunkFromBuffer with listChunk contents', function () {
+    beforeEach(function (done) {
+      var contents = new Buffer(32);
+      contents.write('LIST', 0, 4, 'ascii');
+      contents.writeUInt32BE(24, 4);
+      contents.write('WAVE', 8, 4, 'ascii');
+      contents.write('one ', 12, 4, 'ascii');
+      contents.writeUInt32BE(4, 16);
+      contents.writeUInt32BE(1234, 20);
+      contents.write('two ', 24, 4, 'ascii');
+      contents.writeUInt32BE(0, 28);
+      chunk = Chunk.createChunkFromBuffer({contents: contents});
+      done();
+    });
+
+    it('should exist', function (done) {
+      expect(chunk).not.toBeUndefined();
+      done();
+    });
+    it('should have a id of "LIST"', function (done) {
+      expect(chunk.id).toBe('LIST');
+      done();
+    });
+    it('should have a size of 20', function (done) {
+      expect(chunk.size).toBe(24);
+      done();
+    });
+    it('should have bufferLength', function (done) {
+      expect(chunk.bufferLength).toBe(32);
+      done();
+    });
+    it('should have a listType of "WAVE"', function (done) {
+      expect(chunk.listType).toBe('WAVE');
+      done();
+    });
+    xit('should have a length', function (done) {
+      expect(chunk.length).toBe(2);
+      done();
+    });
+    xit('should have chunkWithId', function (done) {
+      expect(chunk.chunkWithId('one ')).not.toBeUndefined();
+      expect(chunk.chunkWithId('one ').id).toBe('one ');
+      done();
+    });
+    xit('should have chunks', function (done) {
+      expect(chunk.chunks).not.toBeUndefined();
+      expect(chunk.chunks.length).toBe(2);
+      expect(chunk.chunks[0].id).toBe('one ');
+      expect(chunk.chunks[1].id).toBe('two ');
       done();
     });
   });
@@ -72,8 +129,8 @@ describe('ListChunk', function () {
       expect(chunk).not.toBeUndefined();
       done();
     });
-    it('should have chunkById', function (done) {
-      expect(chunk.chunkById('foo ')).toBeUndefined();
+    it('should have chunkWithId', function (done) {
+      expect(chunk.chunkWithId('foo ')).toBeUndefined();
       done();
     });
     it('should have a length', function (done) {
@@ -118,8 +175,8 @@ describe('ListChunk', function () {
         expect(chunk.length).toBe(1);
         done();
       });
-      it('should have chunkById', function (done) {
-        expect(chunk.chunkById('foo ')).toBe(subChunk);
+      it('should have chunkWithId', function (done) {
+        expect(chunk.chunkWithId('foo ')).toBe(subChunk);
         done();
       });
       it('should have chunks', function (done) {

@@ -2,9 +2,9 @@
  * @file Tests the Chunk class
  * @copyright Stephen R. Veit 2015
  */
+'use strict';
 var Chunk = require('../riff/chunk'),
-    util = require('util'),
-    _ = require('lodash');
+  _ = require('lodash');
 
 describe('Chunk', function () {
   var chunk;
@@ -33,6 +33,10 @@ describe('Chunk', function () {
     });
     it('should contents', function (done) {
       expect(Buffer.isBuffer(chunk.contents)).toBe(true);
+      done();
+    });
+    it('should have decodeString', function (done) {
+      expect(chunk.decodeString(0, 4)).toBe('RIFF');
       done();
     });
   });
@@ -94,38 +98,61 @@ describe('Chunk', function () {
       });
     });
   });
-  describe('chunkConstructor', function () {
-    var myConstructor = function () {};
-    beforeEach(function (done) {
-      Chunk.registerChunkConstructor('mcla', myConstructor);
-      done();
+  describe('createChunkFromBuffer', function () {
+    describe('with no offset', function () {
+      var myConstructor;
+      beforeEach(function (done) {
+        var contents = new Buffer(22);
+        contents.write('mcla', 0, 4, 'ascii');
+        contents.writeUInt32BE(4, 4);
+        contents.writeUInt32BE(1234, 8);
+        myConstructor = function (spec) {
+          var that = Chunk.createChunk(spec);
+          return that;
+        };
+        Chunk.registerChunkConstructor('mcla', myConstructor);
+        chunk = Chunk.createChunkFromBuffer({contents: contents});
+        done();
+      });
+      it('should exist', function (done) {
+        expect(chunk).not.toBeUndefined();
+        done();
+      });
+      it('should have a id', function (done) {
+        expect(chunk.id).toBe('mcla');
+        done();
+      });
     });
-    it('should return the chunk class', function (done) {
-      expect(Chunk.chunkConstructor('mcla')).toBe(myConstructor);
-      done();
-    });
-  });
-  describe('createChunkFromBuffer with returned chunk', function () {
-    var myConstructor, chunk;
-    beforeEach(function (done) {
-      var contents = new Buffer(12);
-      contents.writeUInt32BE(0x52494646, 0);
-      contents.write('mcla', 0, 4, 'ascii');
-      myConstructor = function (spec) {
-        var that = Chunk.createChunk(spec);
-        return that;
-      };
-      Chunk.registerChunkConstructor('mcla', myConstructor);
-      chunk = Chunk.createChunkFromBuffer(contents);
-      done();
-    });
-    it('should exist', function (done) {
-      expect(chunk).not.toBeUndefined();
-      done();
-    });
-    it('should have a id', function (done) {
-      expect(chunk.id).toBe('mcla');
-      done();
+    describe('with an offset', function () {
+      var myConstructor;
+      beforeEach(function (done) {
+        var contents = new Buffer(21);
+        contents.write('mcla', 10, 4, 'ascii');
+        contents.writeUInt32BE(3, 14);
+        myConstructor = function (spec) {
+          var that = Chunk.createChunk(spec);
+          return that;
+        };
+        Chunk.registerChunkConstructor('mcla', myConstructor);
+        chunk = Chunk.createChunkFromBuffer({contents: contents, offset: 10});
+        done();
+      });
+      it('should exist', function (done) {
+        expect(chunk).not.toBeUndefined();
+        done();
+      });
+      it('should have a id', function (done) {
+        expect(chunk.id).toBe('mcla');
+        done();
+      });
+      it('should have bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(12);
+        done();
+      });
+      it('should have a size', function (done) {
+        expect(chunk.size).toBe(3);
+        done();
+      });
     });
   });
 });

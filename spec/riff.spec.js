@@ -1,3 +1,8 @@
+/**
+ * @file Tests the RIFF class
+ * @copyright Stephen R. Veit 2015
+ */
+'use strict';
 var riff = require('../riff');
 
 describe('riff', function () {
