@@ -31,6 +31,7 @@ function createChunk(spec) {
     length,
     offset,
     contents,
+    isGarbage,
     data,
     /**
      * Writes a four character chunk ID to the buffer
@@ -62,7 +63,7 @@ function createChunk(spec) {
     writeSize = function (size, offset) {
       size = size || 0;
       offset = offset || 0;
-      contents.writeUInt32BE(size, offset);
+      contents.writeUInt32LE(size, offset);
     },
     /**
      * Appends data to the chunk. The size of the chunk is increase
@@ -114,7 +115,7 @@ function createChunk(spec) {
      * @returns {string} description of chunk
      */
     dataDescription = function () {
-      return '';
+      return that.size;
     },
     /**
      * Returns the description of the chunk indented by the given
@@ -138,7 +139,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'bufferLength', {
     get: function () {
-      return contents.length;
+      return contents ? contents.length : 0;
     }
   });
   /**
@@ -148,7 +149,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'id', {
     get: function () {
-      return that.decodeString(0, 4);
+      return isGarbage ? 'garbage' : that.decodeString(0, 4);
     }
   });
   /**
@@ -158,9 +159,10 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'size', {
     get: function () {
-      if (Buffer.isBuffer(contents)) {
-        return contents.readUInt32BE(4);
+      if (Buffer.isBuffer(contents) && !isGarbage) {
+        return contents.readUInt32LE(4);
       }
+      return Math.max(that.bufferLength - 8, 0);
     }
   });
   /**
@@ -177,9 +179,19 @@ function createChunk(spec) {
   spec = spec || {};
   if (spec.contents) {
     offset = spec.offset || 0;
-    size = spec.contents.readUInt32BE(offset + 4);
-    length = size + 8 + (size % 2); // make sure length is even
-    contents = spec.contents.slice(offset, offset + length);
+    if (spec.contents.length >= offset + 8) {
+      size = spec.contents.readUInt32LE(offset + 4);
+      if (size <= (spec.contents.length - offset - 8)) {
+        length = size + 8 + (size % 2); // make sure length is even
+        contents = spec.contents.slice(offset, offset + length);
+      } else {
+        contents = spec.contents.slice(offset);
+        isGarbage = true;
+      }
+    } else {
+      contents = spec.contents.slice(offset);
+      isGarbage = true;
+    }
   } else {
     data = spec.data ?
         (Array.isArray(spec.data) ? spec.data : [spec.data]) : [];
@@ -240,7 +252,11 @@ function registerChunkConstructor(id, chunkConstructor) {
  */
 function createChunkFromBuffer(args) {
   var id, offset = args.offset || 0;
-  id = args.contents.toString('ascii', offset, offset + 4);
+  if (args.contents.length >= offset + 8) {
+    id = args.contents.toString('ascii', offset, offset + 4);
+  } else {
+    id = '';
+  }
   return chunkConstructor(id)(args);
 }
 

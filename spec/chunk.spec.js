@@ -44,7 +44,7 @@ describe('Chunk', function () {
       done();
     });
     it('should have a description', function (done) {
-      expect(chunk.description()).toBe('RIFF()');
+      expect(chunk.description()).toBe('RIFF(5)');
       done();
     });
     describe('description with indentation of 4', function () {
@@ -54,7 +54,7 @@ describe('Chunk', function () {
         done();
       });
       it('should start with four spaces', function (done) {
-        expect(description).toBe('RIFF()');
+        expect(description).toBe('RIFF(5)');
         done();
       });
     });
@@ -82,8 +82,8 @@ describe('Chunk', function () {
     });
     it('should have contents', function (done) {
       var expectedContents = new Buffer(8);
-      expectedContents.writeUInt32BE(0x20202020, 0);
-      expectedContents.writeUInt32BE(0, 4);
+      expectedContents.writeUInt32LE(0x20202020, 0);
+      expectedContents.writeUInt32LE(0, 4);
       expect(chunk.contents.length).toBe(8);
       _.forEach(chunk.contents, function (byte, i) {
         expect(byte).toBe(expectedContents[i]);
@@ -123,8 +123,8 @@ describe('Chunk', function () {
       beforeEach(function (done) {
         var contents = new Buffer(22);
         contents.write('mcla', 0, 4, 'ascii');
-        contents.writeUInt32BE(4, 4);
-        contents.writeUInt32BE(1234, 8);
+        contents.writeUInt32LE(4, 4);
+        contents.writeUInt32LE(1234, 8);
         myConstructor = function (spec) {
           var that = Chunk.createChunk(spec);
           return that;
@@ -147,7 +147,7 @@ describe('Chunk', function () {
       beforeEach(function (done) {
         var contents = new Buffer(21);
         contents.write('mcla', 10, 4, 'ascii');
-        contents.writeUInt32BE(3, 14);
+        contents.writeUInt32LE(3, 14);
         myConstructor = function (spec) {
           var that = Chunk.createChunk(spec);
           return that;
@@ -170,6 +170,40 @@ describe('Chunk', function () {
       });
       it('should have a size', function (done) {
         expect(chunk.size).toBe(3);
+        done();
+      });
+    });
+    describe('with garbage', function () {
+      beforeEach(function (done) {
+        var contents = new Buffer(80),
+          garbage = 'gggog\u007F\u007Fooooooooooooooooooooooooooooooooo' +
+              'oooooooooooooooooooooooooooooooooooooooo';
+        contents.write(garbage, 0, 80, 'ascii');
+        chunk = Chunk.createChunkFromBuffer({contents: contents});
+        done();
+      });
+      it('should exist', function (done) {
+        expect(chunk).not.toBeUndefined();
+        done();
+      });
+      it('should have a id', function (done) {
+        expect(chunk.id).toBe('garbage');
+        done();
+      });
+      it('should have bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(80);
+        done();
+      });
+      it('should have a size', function (done) {
+        expect(chunk.size).toBe(80 - 8);
+        done();
+      });
+      it('should have contents', function (done) {
+        expect(chunk.contents.length).toBe(80);
+        done();
+      });
+      it('should have a description', function (done) {
+        expect(chunk.description()).toBe('garbage(72)');
         done();
       });
     });

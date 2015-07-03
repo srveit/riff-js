@@ -4,7 +4,7 @@
  */
 'use strict';
 var Chunk = require('../riff/chunk'),
-  ListChunk = require('../riff/ListChunk'),
+  ListChunk = require('../riff/listChunk'),
   util = require('util'),
   _ = require('lodash');
 
@@ -55,12 +55,12 @@ describe('ListChunk', function () {
     it('should have contents', function (done) {
       var expectedContents = new Buffer(28);
       expectedContents.write('RIFF', 0, 4, 'ascii');
-      expectedContents.writeUInt32BE(20, 4);
+      expectedContents.writeUInt32LE(20, 4);
       expectedContents.write('WAVE', 8, 4, 'ascii');
       expectedContents.write('one ', 12, 4, 'ascii');
-      expectedContents.writeUInt32BE(0, 16);
+      expectedContents.writeUInt32LE(0, 16);
       expectedContents.write('two ', 20, 4, 'ascii');
-      expectedContents.writeUInt32BE(0, 24);
+      expectedContents.writeUInt32LE(0, 24);
       expect(chunk.contents.length).toBe(28);
       _.forEach(chunk.contents, function (byte, i) {
         expect(byte).toBe(expectedContents[i]);
@@ -69,8 +69,8 @@ describe('ListChunk', function () {
     });
     it('should have a description', function (done) {
       expect(chunk.description())
-        .toBe('RIFF(\'WAVE\'  one ()\n' +
-              '             two ())');
+        .toBe('RIFF(\'WAVE\'  one (0)\n' +
+              '             two (0))');
       done();
     });
     describe('description with indentation of 4', function () {
@@ -81,8 +81,8 @@ describe('ListChunk', function () {
       });
       it('should start with four spaces', function (done) {
         expect(description)
-          .toBe('    RIFF(\'WAVE\'  one ()\n' +
-                '                 two ())');
+          .toBe('    RIFF(\'WAVE\'  one (0)\n' +
+                '                 two (0))');
         done();
       });
     });
@@ -91,13 +91,13 @@ describe('ListChunk', function () {
     beforeEach(function (done) {
       var contents = new Buffer(32);
       contents.write('LIST', 0, 4, 'ascii');
-      contents.writeUInt32BE(24, 4);
+      contents.writeUInt32LE(24, 4);
       contents.write('WAVE', 8, 4, 'ascii');
       contents.write('one ', 12, 4, 'ascii');
-      contents.writeUInt32BE(4, 16);
-      contents.writeUInt32BE(1234, 20);
+      contents.writeUInt32LE(4, 16);
+      contents.writeUInt32LE(1234, 20);
       contents.write('two ', 24, 4, 'ascii');
-      contents.writeUInt32BE(0, 28);
+      contents.writeUInt32LE(0, 28);
       chunk = Chunk.createChunkFromBuffer({contents: contents});
       done();
     });
@@ -177,7 +177,7 @@ describe('ListChunk', function () {
     it('should have contents', function (done) {
       var expectedContents = new Buffer(12);
       expectedContents.write('LIST', 0, 4, 'ascii');
-      expectedContents.writeUInt32BE(4, 4);
+      expectedContents.writeUInt32LE(4, 4);
       expectedContents.write('    ', 8, 4, 'ascii');
       expect(chunk.bufferLength).toBe(12);
       _.forEach(chunk.contents, function (byte, i) {
@@ -211,10 +211,10 @@ describe('ListChunk', function () {
       it('should have contents', function (done) {
         var expectedContents = new Buffer(20);
         expectedContents.write('LIST', 0, 4, 'ascii');
-        expectedContents.writeUInt32BE(12, 4);
+        expectedContents.writeUInt32LE(12, 4);
         expectedContents.write('    ', 8, 4, 'ascii');
         expectedContents.write('foo ', 12, 4, 'ascii');
-        expectedContents.writeUInt32BE(0, 16);
+        expectedContents.writeUInt32LE(0, 16);
         expect(chunk.contents.length).toBe(20);
         _.forEach(chunk.contents, function (byte, i) {
           expect(byte).toBe(expectedContents[i]);

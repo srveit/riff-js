@@ -78,7 +78,7 @@ function createListChunk(spec) {
       var description = '\'' + that.listType + '\'';
       if (chunks.length > 0) {
         description += '  ' + chunks.map(function (chunk) {
-          return chunk.description();
+          return chunk.description(indent + 8);
         }).join('\n' + that.spaces(indent + 8));
       }
       return description;
@@ -86,7 +86,7 @@ function createListChunk(spec) {
 
   spec = spec || {};
   if (spec.contents) {
-    that = Chunk.createChunk({contents: spec.contents});
+    that = Chunk.createChunk(spec);
     chunks = decodeChunks(that, 12);
   } else {
     id = (spec && spec.id) || 'LIST';
