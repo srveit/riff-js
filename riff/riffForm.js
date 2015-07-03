@@ -8,7 +8,9 @@ var lodash = require('lodash'),
   ListChunk = require('../riff/listChunk');
 
 /**
- * A RIFF form contains a list, or ordered sequence, of subchunks.
+ * A RIFF form is a chunk with a ‘RIFF’ chunk ID. The term also refers
+ * to a file format that follows the RIFF framework. It inherits from
+ * ListChunk.
  * @class RiffForm
  */
 /**
