@@ -56,9 +56,14 @@ function createListChunk(spec) {
      * @returns {Chunk[]} list of decoded chunks
      */
     decodeChunks = function (chunk, offset) {
-      if (offset > chunk.bufferLength) {
+      var subChunk;
+      if (offset >= chunk.bufferLength) {
         return [];
       }
+      subChunk = Chunk.createChunkFromBuffer({contents: chunk.contents,
+                                              offset: offset});
+      return [subChunk].concat(decodeChunks(chunk,
+                                            offset + subChunk.bufferLength));
     };
 
   spec = spec || {};

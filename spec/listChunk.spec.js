@@ -103,20 +103,22 @@ describe('ListChunk', function () {
       expect(chunk.listType).toBe('WAVE');
       done();
     });
-    xit('should have a length', function (done) {
+    it('should have a length', function (done) {
       expect(chunk.length).toBe(2);
       done();
     });
-    xit('should have chunkWithId', function (done) {
-      expect(chunk.chunkWithId('one ')).not.toBeUndefined();
-      expect(chunk.chunkWithId('one ').id).toBe('one ');
-      done();
-    });
-    xit('should have chunks', function (done) {
+    it('should have chunks', function (done) {
       expect(chunk.chunks).not.toBeUndefined();
       expect(chunk.chunks.length).toBe(2);
       expect(chunk.chunks[0].id).toBe('one ');
       expect(chunk.chunks[1].id).toBe('two ');
+      done();
+    });
+    it('should have chunkWithId', function (done) {
+      expect(chunk.chunkWithId('one ')).not.toBeUndefined();
+      expect(chunk.chunkWithId('one ').id).toBe('one ');
+      expect(chunk.chunkWithId('two ')).not.toBeUndefined();
+      expect(chunk.chunkWithId('two ').id).toBe('two ');
       done();
     });
   });
