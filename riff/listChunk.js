@@ -21,7 +21,10 @@ var _ = require('lodash'),
 function createListChunk(spec) {
   var id = spec && spec.id || 'LIST',
       chunks = spec && spec.chunks || [],
-      that = Chunk.createChunk({id: id, size: 4}),
+      listType = spec && spec.listType || '    ',
+      data = [new Buffer(listType, 'ascii')]
+        .concat(_.map(chunks, 'contents')),
+      that = Chunk.createChunk({id: id, data: data}),
       /**
        * Returns the last chunk of the given ID
        * @name chunkById
@@ -38,6 +41,7 @@ function createListChunk(spec) {
        */
       add = function (chunk) {
         that.chunks.push(chunk);
+        that.appendData(chunk.contents);
       };
 
   /**
@@ -69,11 +73,6 @@ function createListChunk(spec) {
   that.chunks = chunks;
   that.chunkById = chunkById;
   that.add = add;
-
-  that.writeId(spec && spec.listType, 8);
-  that.contents = Buffer.concat([that.contents]
-                                .concat(_.map(that.chunks, 'contents')));
-  that.writeSize(that.bufferLength - 8, 4);
   
   return that;
 }

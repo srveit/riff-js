@@ -126,16 +126,18 @@ describe('ListChunk', function () {
         expect(chunk.chunks).toEqual([subChunk]);
         done();
       });
-      xit('should have a size of 4', function (done) {
+      it('should have a size of 12', function (done) {
         expect(chunk.size).toBe(12);
         done();
       });
-      xit('should have contents', function (done) {
-        var expectedContents = new Buffer(12);
+      it('should have contents', function (done) {
+        var expectedContents = new Buffer(20);
         expectedContents.write('LIST', 0, 4, 'ascii');
-        expectedContents.writeUInt32BE(4, 4);
-        expectedContents.write('foo ', 8, 4, 'ascii');
-        expect(chunk.contents.length).toBe(8);
+        expectedContents.writeUInt32BE(12, 4);
+        expectedContents.write('    ', 8, 4, 'ascii');
+        expectedContents.write('foo ', 12, 4, 'ascii');
+        expectedContents.writeUInt32BE(0, 16);
+        expect(chunk.contents.length).toBe(20);
         _.forEach(chunk.contents, function (byte, i) {
           expect(byte).toBe(expectedContents[i]);
         });
