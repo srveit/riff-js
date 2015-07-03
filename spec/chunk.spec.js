@@ -8,9 +8,11 @@ var Chunk = require('../riff/chunk'),
 
 describe('Chunk', function () {
   var chunk;
-  describe('with id and size parameters', function () {
+  describe('with id and data parameters', function () {
+    var data;
     beforeEach(function (done) {
-      chunk = Chunk.createChunk({id: 'RIFF', size: 5});
+      data = new Buffer(5);
+      chunk = Chunk.createChunk({id: 'RIFF', data: data});
       done();
     });
     it('should return a chunk', function (done) {
@@ -22,7 +24,7 @@ describe('Chunk', function () {
       done();
     });
     it('should have bufferLength', function (done) {
-      expect(chunk.bufferLength).toBe(13);
+      expect(chunk.bufferLength).toBe(14);
       done();
     });
     it('should have a size', function (done) {
@@ -77,24 +79,17 @@ describe('Chunk', function () {
       expect(chunk.size).toBe(0);
       done();
     });
-    describe('and setContents called', function () {
+    describe('and data is appended', function () {
       beforeEach(function (done) {
-        var contents = new Buffer(12);
-        contents.writeUInt32BE(0x52494646, 0);
-        contents.writeUInt32BE(4, 4);
-        chunk.setContents(contents);
+        chunk.appendData(new Buffer(7));
         done();
       });
-      it('should have a id of "RIFF"', function (done) {
-        expect(chunk.id).toBe('RIFF');
+      it('should have increased bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(15);
         done();
       });
-      it('should have a bufferLength', function (done) {
-        expect(chunk.bufferLength).toBe(12);
-        done();
-      });
-      it('should have a size', function (done) {
-        expect(chunk.size).toBe(4);
+      it('should have increased size', function (done) {
+        expect(chunk.size).toBe(7);
         done();
       });
     });

@@ -22,7 +22,9 @@ var _ = require('lodash'),
 function createChunk(spec) {
   var that = {},
       specIn = spec || {},
-      size = specIn.size || 0,
+      size,
+      data = specIn.data ?
+        (Array.isArray(specIn.data) ? specIn.data : [specIn.data]) : [],
       /**
        * Writes a four character chunk ID to the buffer
        * @param {string} [id] - four character ID of chunk. Defaults to
@@ -52,11 +54,15 @@ function createChunk(spec) {
         that.contents.writeUInt32BE(size, offset);
       },
       /**
-       * Sets ths encoded contents of a chunk.
-       * @param {Buffer} contents - encoded byte contents of the chunk
+       * Appends data to the chunk. The size of the chunk is increase by the size of data or size of data + 1, if a pad byte had been previously added.
+       * @param {Buffer} data - a Buffer or array of buffers
        */
-      setContents = function (newContents) {
-        that.contents = newContents;
+      appendData = function(data) {
+        var newSize;
+        data = Array.isArray(data) ? data : [data];
+        that.contents = Buffer.concat([that.contents].concat(data));
+        newSize = that.contents.length - 8 + (that.size % 2);
+        writeSize(newSize, 4);
       };
 
   /**
@@ -103,10 +109,15 @@ function createChunk(spec) {
 
   that.writeId = writeId;
   that.writeSize = writeSize;
-  that.setContents = setContents;
-  that.contents = new Buffer(8 + size);
+  that.appendData = appendData;
+
+  that.contents = Buffer.concat([new Buffer(8)].concat(data));
   writeId(specIn.id);
+  size = that.contents.length - 8;
   writeSize(size, 4);
+  if (size % 2 === 1) {
+    that.contents = Buffer.concat([that.contents].concat(new Buffer([0])));
+  }
   return that;
 }
 
@@ -139,7 +150,7 @@ function createChunkFromBuffer(contents) {
     id = contents.toString('ascii', 0, 4);
     constructor = chunkConstructor(id);
     chunk = constructor();
-    chunk.setContents(contents);
+    chunk.contents = contents;
     return chunk;
   } else {
     return createChunk(contents);
