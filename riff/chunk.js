@@ -3,7 +3,10 @@
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
-var chunkConstructors = {};
+var chunkConstructors = {},
+  spacesBuffer = new Buffer(1000);
+
+spacesBuffer.fill(' ');
 
 /**
  * The basic building block of a RIFF file.
@@ -27,6 +30,7 @@ function createChunk(spec) {
     size,
     length,
     offset,
+    contents,
     data,
     /**
      * Writes a four character chunk ID to the buffer
@@ -44,7 +48,7 @@ function createChunk(spec) {
       } else {
         id = '    ';
       }
-      that.contents.write(id, offset, 4, 'ascii');
+      contents.write(id, offset, 4, 'ascii');
     },
     /**
      * Writes a four byte size to the buffer
@@ -58,7 +62,7 @@ function createChunk(spec) {
     writeSize = function (size, offset) {
       size = size || 0;
       offset = offset || 0;
-      that.contents.writeUInt32BE(size, offset);
+      contents.writeUInt32BE(size, offset);
     },
     /**
      * Appends data to the chunk. The size of the chunk is increase
@@ -71,8 +75,8 @@ function createChunk(spec) {
     appendData = function (data) {
       var newSize;
       data = Array.isArray(data) ? data : [data];
-      that.contents = Buffer.concat([that.contents].concat(data));
-      newSize = that.contents.length - 8 + (that.size % 2);
+      contents = Buffer.concat([contents].concat(data));
+      newSize = contents.length - 8 + (that.size % 2);
       writeSize(newSize, 4);
     },
     /**
@@ -85,26 +89,60 @@ function createChunk(spec) {
      * @returns {string} decoded string
      */
     decodeString = function (start, end) {
-      if (Buffer.isBuffer(that.contents)) {
-        return that.contents.toString('ascii', start, end);
+      if (Buffer.isBuffer(contents)) {
+        return contents.toString('ascii', start, end);
       }
       return '';
+    },
+    /**
+     * Returns a string with a given number of spaces
+     * @name Chunk#spaces
+     * @function
+     * @param {number} length - number of spaces
+     * @returns {string} string of spaces
+     */
+    spaces = function (length) {
+      return spacesBuffer.toString('ascii', 0, length);
+    },
+    /**
+     * Returns the data description of the chunk indented by the given
+     *   number of spaces if it flows to another line
+     * @name Chunk#dataDescription
+     * @function
+     * @param {number} indent - number of spaces to put in front of
+     *   each line of the desription after the first line.
+     * @returns {string} description of chunk
+     */
+    dataDescription = function () {
+      return '';
+    },
+    /**
+     * Returns the description of the chunk indented by the given
+     *   number of spaces
+     * @name Chunk#description
+     * @function
+     * @param {number} [indent] - number of spaces to put in front of
+     *   each line of the desription except the first. Defaults to 0.
+     * @returns {string} description of chunk
+     */
+    description = function (indent) {
+      indent = indent || 0;
+      return that.id +
+        '(' + that.dataDescription(indent + 5) + ')';
     };
 
   /**
    * The number of bytes in the encoded representation of the chunk
-   * @property {number}
    * @name Chunk#bufferLength
    * @readonly
    */
   Object.defineProperty(that, 'bufferLength', {
     get: function () {
-      return that.contents.length;
+      return contents.length;
     }
   });
   /**
    * The four character ID of chunk
-   * @property {string}
    * @name Chunk#id
    * @readonly
    */
@@ -115,15 +153,24 @@ function createChunk(spec) {
   });
   /**
    * the size of the chunk not including the chunk id and size.
-   * @property {number}
    * @name Chunk#size
    * @readonly
    */
   Object.defineProperty(that, 'size', {
     get: function () {
-      if (Buffer.isBuffer(that.contents)) {
-        return that.contents.readUInt32BE(4);
+      if (Buffer.isBuffer(contents)) {
+        return contents.readUInt32BE(4);
       }
+    }
+  });
+  /**
+   * The encoded byte buffer fo the chunk
+   * @name Chunk#contents
+   * @readonly
+   */
+  Object.defineProperty(that, 'contents', {
+    get: function () {
+      return contents;
     }
   });
 
@@ -132,25 +179,28 @@ function createChunk(spec) {
     offset = spec.offset || 0;
     size = spec.contents.readUInt32BE(offset + 4);
     length = size + 8 + (size % 2); // make sure length is even
-    that.contents = spec.contents.slice(offset, offset + length);
+    contents = spec.contents.slice(offset, offset + length);
   } else {
     data = spec.data ?
         (Array.isArray(spec.data) ? spec.data : [spec.data]) : [];
-    that.contents = Buffer.concat([new Buffer(8)].concat(data));
+    contents = Buffer.concat([new Buffer(8)].concat(data));
     writeId(spec.id);
-    size = that.contents.length - 8;
+    size = contents.length - 8;
     length = size + 8 + (size % 2); // make sure length is even
     writeSize(size, 4);
   }
-  if (that.contents.length < length) {
+  if (contents.length < length) {
     // Pad contents
-    that.contents = Buffer.concat([that.contents].concat(new Buffer([0])));
+    contents = Buffer.concat([contents].concat(new Buffer([0])));
   }
 
   that.writeId = writeId;
   that.writeSize = writeSize;
   that.appendData = appendData;
   that.decodeString = decodeString;
+  that.dataDescription = dataDescription;
+  that.description = description;
+  that.spaces = spaces;
 
   return that;
 }

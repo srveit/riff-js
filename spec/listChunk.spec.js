@@ -67,6 +67,25 @@ describe('ListChunk', function () {
       });
       done();
     });
+    it('should have a description', function (done) {
+      expect(chunk.description())
+        .toBe('RIFF(\'WAVE\'  one ()\n' +
+              '             two ())');
+      done();
+    });
+    describe('description with indentation of 4', function () {
+      var description;
+      beforeEach(function (done) {
+        description = '    ' + chunk.description(4);
+        done();
+      });
+      it('should start with four spaces', function (done) {
+        expect(description)
+          .toBe('    RIFF(\'WAVE\'  one ()\n' +
+                '                 two ())');
+        done();
+      });
+    });
   });
   describe('createChunkFromBuffer with listChunk contents', function () {
     beforeEach(function (done) {

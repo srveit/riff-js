@@ -39,6 +39,25 @@ describe('Chunk', function () {
       expect(chunk.decodeString(0, 4)).toBe('RIFF');
       done();
     });
+    it('should have a spaces utility function', function (done) {
+      expect(chunk.spaces(5)).toBe('     ');
+      done();
+    });
+    it('should have a description', function (done) {
+      expect(chunk.description()).toBe('RIFF()');
+      done();
+    });
+    describe('description with indentation of 4', function () {
+      var description;
+      beforeEach(function (done) {
+        description = chunk.description(4);
+        done();
+      });
+      it('should start with four spaces', function (done) {
+        expect(description).toBe('RIFF()');
+        done();
+      });
+    });
   });
   describe('with no parameters', function () {
     beforeEach(function (done) {

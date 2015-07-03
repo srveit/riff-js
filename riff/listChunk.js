@@ -64,6 +64,24 @@ function createListChunk(spec) {
                                               offset: offset});
       return [subChunk].concat(decodeChunks(chunk,
                                             offset + subChunk.bufferLength));
+    },
+    /**
+     * Returns the data description of the chunk indented by the given
+     *   number of spaces if it flows to another line
+     * @name Chunk#dataDescription
+     * @function
+     * @param {number} indent - number of spaces to put in front of
+     *   each line of the desription after the first line.
+     * @returns {string} description of chunk
+     */
+    dataDescription = function (indent) {
+      var description = '\'' + that.listType + '\'';
+      if (chunks.length > 0) {
+        description += '  ' + chunks.map(function (chunk) {
+          return chunk.description();
+        }).join('\n' + that.spaces(indent + 8));
+      }
+      return description;
     };
 
   spec = spec || {};
@@ -112,6 +130,7 @@ function createListChunk(spec) {
 
   that.chunkWithId = chunkWithId;
   that.add = add;
+  that.dataDescription = dataDescription;
 
   return that;
 }
