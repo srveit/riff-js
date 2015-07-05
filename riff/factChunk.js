@@ -52,9 +52,6 @@ function createFactChunk(spec) {
   Object.defineProperty(that, "fileSize", {
     get: function () {
       return that.data.readUInt32LE(0);
-    },
-    set: function (fileSize) {
-      return that.data.writeUInt32LE(fileSize, 0);
     }
   });
 

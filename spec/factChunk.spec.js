@@ -127,34 +127,5 @@ describe('FactChunk', function () {
       });
       done();
     });
-    describe('when setting the fileSize', function () {
-      beforeEach(function (done) {
-        chunk.fileSize = 100000;
-        done();
-      });
-      it('should have a size of 4', function (done) {
-        expect(chunk.size).toBe(4);
-        done();
-      });
-      it('should have bufferLength', function (done) {
-        expect(chunk.bufferLength).toBe(12);
-        done();
-      });
-      it('should have a fileSize of 100000', function (done) {
-        expect(chunk.fileSize).toBe(100000);
-        done();
-      });
-      it('should have contents', function (done) {
-        var expectedContents = new Buffer(12);
-        expectedContents.write('fact', 0, 4, 'ascii');
-        expectedContents.writeUInt32LE(4, 4);
-        expectedContents.writeUInt32LE(100000, 8);
-        expect(chunk.contents.length).toBe(12);
-        _.forEach(chunk.contents, function (byte, i) {
-          expect(byte).toBe(expectedContents[i]);
-        });
-        done();
-      });
-    });
   });
 });
