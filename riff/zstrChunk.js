@@ -10,7 +10,10 @@ var lodash = require('lodash'),
                 'IPRD', 'ISBJ', 'ISFT', 'ISHP', 'ISRC', 'ISRF', 'ITCH'];
 
 /**
- * A zstr chunk stores a ZSTR, or null-terminated text string.
+ * A zstr chunk stores a ZSTR, or null-terminated text string. The
+ *   following chunks are ZSTR chunks: IARL IART ICMS ICMT ICOP ICRD
+ *   ICRP IDIM IDPI IENG IGNR IKEY ILGT IMED INAM IPLT IPRD ISBJ ISFT
+ *   ISHP ISRC ISRF ITCH
  * @class ZstrChunk
  */
 /**
@@ -52,8 +55,9 @@ function createZstrChunk(spec) {
   }
 
   /**
-   * The number of samples in the WAVE file.
+   * The null-terminated text string.
    * @name ZstrChunk#text
+   * @readonly
    */
   Object.defineProperty(that, "text", {
     get: function () {
