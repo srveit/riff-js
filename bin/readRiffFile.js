@@ -1,23 +1,13 @@
 'use strict';
 var fs = require('fs'),
-  Chunk = require('../riff/chunk'),
-  RiffForm = require('../riff/riffForm');
-require('../riff/factChunk');
-require('../riff/zstrChunk');
-require('../riff/fmtChunk');
+  riff = require('../riff');
 
-function readRiffFile() {
-  var filename = process.argv[2],
-      buffer = fs.readFileSync(filename),
+function readRiffFile(filename) {
+  var buffer = fs.readFileSync(filename),
       chunk;
   console.log(filename, buffer.length);
-  chunk = Chunk.createChunkFromBuffer({contents: buffer});
-  if (chunk) {
-    console.log(chunk.description());
-  } else {
-    console.log('unable to parse', buffer);
-  }
+  chunk = riff.createChunkFromBuffer({contents: buffer});
+  console.log(chunk.description());
 }
 
-readRiffFile();
-
+readRiffFile(process.argv[2]);

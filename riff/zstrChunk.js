@@ -1,5 +1,5 @@
 /**
- * @file Implements the ZstrChunk class
+ * @file Implements the ZstrChunk class.
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
@@ -20,6 +20,7 @@ var lodash = require('lodash'),
  * Creates a zstr chunk that contains a null-terminated text string.
  * @name ZstrChunk.createZstrChunk
  * @function
+ * @param {object} spec
  * @param {string} [spec.id] - four character ID of chunk. Defaults to
  *   "zstr".
  * @param {number} [spec.text] - null-terminated text string. Defaults to "".

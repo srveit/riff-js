@@ -1,5 +1,5 @@
 /**
- * @file Implements the ListChunk class
+ * @file Implements the ListChunk class.
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
@@ -14,6 +14,7 @@ var lodash = require('lodash'),
  * Creates a RIFF chunk that contains a list of RIFF chunks
  * @name ListChunk.createListChunk
  * @function
+ * @param {object} spec
  * @param {string} [spec.listType] - four-character code that
  * identifies the contents of the list. Defaults to "    " (four spaces).
  * @param {string} [spec.id] - four character ID of chunk. Defaults to

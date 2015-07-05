@@ -1,5 +1,5 @@
 /**
- * @file Implements the RiffForm class
+ * @file Implements the RiffForm class.
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
@@ -17,6 +17,7 @@ var lodash = require('lodash'),
  * Creates a RIFF chunk that contains a list of RIFF chunks
  * @name RiffForm.createRiffForm
  * @function
+ * @param {object} spec
  * @param {string} [spec.formType] - four-character code that
  * identifies the contents of the list. Defaults to "    " (four spaces).
  * @param {Chunk[]} [spec.chunks] - chunks contained in

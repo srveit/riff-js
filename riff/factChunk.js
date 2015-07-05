@@ -1,5 +1,5 @@
 /**
- * @file Implements the FactChunk class
+ * @file Implements the FactChunk class.
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
@@ -15,6 +15,7 @@ var lodash = require('lodash'),
  * Creates a fact chunk that contains the number of samples in a WAVE file.
  * @name FactChunk.createFactChunk
  * @function
+ * @param {object} spec
  * @param {number} [spec.fileSize] - number of samples. Defaults to 0.
  * @param {Buffer} [spec.contents] - encoded byte contents of the chunk.
  * @param {number} [spec.offset] - position from start of buffer of

@@ -1,5 +1,5 @@
 /**
- * @file Implements the Chunk class
+ * @file Implements the Chunk class.
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
@@ -17,6 +17,7 @@ spacesBuffer.fill(' ');
  * of a RIFF file.
  * @name Chunk.createChunk
  * @function
+ * @param {object} spec
  * @param {string} [spec.id] - four-character code that identifies
  *   the representation of the chunk data. Defaults to " ".
  * @param {Buffer} [spec.data] - binary data of the chunk. Defaults to
@@ -255,6 +256,7 @@ function registerChunkConstructor(id, chunkConstructor) {
  * Creates a chunk of the appropriate class from the contents of a chunk
  * @name Chunk.createChunkFromBuffer
  * @function
+ * @param {object} args
  * @param {Buffer} args.contents - encoded byte contents of the chunk
  * @param {number} [args.offset] - position from start of buffer of
  *   encoded chunk
@@ -269,7 +271,20 @@ function createChunkFromBuffer(args) {
   }
   return chunkConstructor(id)(args);
 }
+/**
+ * Creates a chunk of the given id, use the given paramters
+ * @name Chunk.createChunkWithId
+ * @function
+ * @param {object} spec - named parameters for constructing chunk of
+ *   type spec.id
+ * @param {string} spec.id - four-character code that identifies
+ * @returns {Chunk} - chunk of the appropriate class
+ */
+function createChunkWithId(spec) {
+  return chunkConstructor(spec.id)(spec);
+}
 
 exports.createChunk = createChunk;
 exports.createChunkFromBuffer = createChunkFromBuffer;
 exports.registerChunkConstructor = registerChunkConstructor;
+exports.createChunkWithId = createChunkWithId;
