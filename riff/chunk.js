@@ -31,7 +31,7 @@ function createChunk(spec) {
     length,
     offset,
     contents,
-    isGarbage,
+    isJunk,
     data,
     /**
      * Writes a four character chunk ID to the buffer
@@ -107,11 +107,11 @@ function createChunk(spec) {
     },
     /**
      * Returns the data description of the chunk indented by the given
-     *   number of spaces if it flows to another line
+     *   number of spaces if it flows to another line.
      * @name Chunk#dataDescription
      * @function
-     * @param {number} indent - number of spaces to put in front of
-     *   each line of the desription after the first line.
+     * @param {number} [indent] - number of spaces to put in front of
+     *   each line of the desription after the first line. Defaults to 0.
      * @returns {string} description of chunk
      */
     dataDescription = function () {
@@ -149,7 +149,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'id', {
     get: function () {
-      return isGarbage ? 'garbage' : that.decodeString(0, 4);
+      return isJunk ? 'JUNK' : that.decodeString(0, 4);
     }
   });
   /**
@@ -159,7 +159,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'size', {
     get: function () {
-      if (Buffer.isBuffer(contents) && !isGarbage) {
+      if (Buffer.isBuffer(contents) && !isJunk) {
         return contents.readUInt32LE(4);
       }
       return Math.max(that.bufferLength - 8, 0);
@@ -175,6 +175,16 @@ function createChunk(spec) {
       return contents;
     }
   });
+  /**
+   * The encoded byte buffer fo the chunk
+   * @name Chunk#data
+   * @readonly
+   */
+  Object.defineProperty(that, 'data', {
+    get: function () {
+      return contents.slice(8);
+    }
+  });
 
   spec = spec || {};
   if (spec.contents) {
@@ -186,11 +196,11 @@ function createChunk(spec) {
         contents = spec.contents.slice(offset, offset + length);
       } else {
         contents = spec.contents.slice(offset);
-        isGarbage = true;
+        isJunk = true;
       }
     } else {
       contents = spec.contents.slice(offset);
-      isGarbage = true;
+      isJunk = true;
     }
   } else {
     data = spec.data ?

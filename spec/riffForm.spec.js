@@ -109,7 +109,7 @@ describe('RiffForm', function () {
       expect(chunk.id).toBe('RIFF');
       done();
     });
-    it('should have a size of 20', function (done) {
+    it('should have a size of 24', function (done) {
       expect(chunk.size).toBe(24);
       done();
     });

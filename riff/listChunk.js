@@ -70,8 +70,8 @@ function createListChunk(spec) {
      *   number of spaces if it flows to another line
      * @name Chunk#dataDescription
      * @function
-     * @param {number} indent - number of spaces to put in front of
-     *   each line of the desription after the first line.
+     * @param {number} [indent] - number of spaces to put in front of
+     *   each line of the desription after the first line. Defaults to 0.
      * @returns {string} description of chunk
      */
     dataDescription = function (indent) {

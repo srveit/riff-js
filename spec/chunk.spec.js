@@ -11,7 +11,7 @@ describe('Chunk', function () {
   describe('with id and data parameters', function () {
     var data;
     beforeEach(function (done) {
-      data = new Buffer(5);
+      data = new Buffer([1, 2, 3, 4, 5]);
       chunk = Chunk.createChunk({id: 'RIFF', data: data});
       done();
     });
@@ -31,8 +31,12 @@ describe('Chunk', function () {
       expect(chunk.size).toBe(5);
       done();
     });
-    it('should contents', function (done) {
+    it('should have contents', function (done) {
       expect(Buffer.isBuffer(chunk.contents)).toBe(true);
+      done();
+    });
+    it('should have data', function (done) {
+      expect(Buffer.isBuffer(chunk.data)).toBe(true);
       done();
     });
     it('should have decodeString', function (done) {
@@ -173,12 +177,12 @@ describe('Chunk', function () {
         done();
       });
     });
-    describe('with garbage', function () {
+    describe('with JUNK', function () {
       beforeEach(function (done) {
         var contents = new Buffer(80),
-          garbage = 'gggog\u007F\u007Fooooooooooooooooooooooooooooooooo' +
+          junk = 'gggog\u007F\u007Fooooooooooooooooooooooooooooooooo' +
               'oooooooooooooooooooooooooooooooooooooooo';
-        contents.write(garbage, 0, 80, 'ascii');
+        contents.write(junk, 0, 80, 'ascii');
         chunk = Chunk.createChunkFromBuffer({contents: contents});
         done();
       });
@@ -187,7 +191,7 @@ describe('Chunk', function () {
         done();
       });
       it('should have a id', function (done) {
-        expect(chunk.id).toBe('garbage');
+        expect(chunk.id).toBe('JUNK');
         done();
       });
       it('should have bufferLength', function (done) {
@@ -203,7 +207,7 @@ describe('Chunk', function () {
         done();
       });
       it('should have a description', function (done) {
-        expect(chunk.description()).toBe('garbage(72)');
+        expect(chunk.description()).toBe('JUNK(72)');
         done();
       });
     });

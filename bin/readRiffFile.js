@@ -2,6 +2,8 @@
 var fs = require('fs'),
   Chunk = require('../riff/chunk'),
   RiffForm = require('../riff/riffForm');
+require('../riff/factChunk');
+require('../riff/zstrChunk');
 
 function readRiffFile() {
   var filename = process.argv[2],
