@@ -24,10 +24,14 @@
   },
   "homepage": "https://github.com/srveit/riff-js/wiki",
   "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jslint": "^0.2.2",
+    "gulp-watch": "^4.2.4",
     "jasmine": "^2.2.1",
     "jsdoc": "^3.3.1",
     "jshint": "^2.8.0",
-    "jslint": "^0.9.1"
+    "jslint": "^0.9.1",
+    "q": "^1.4.1"
   },
   "readme": "# riff-js\nJavascript library for encoding and decoding RIFF format files.\n"
 }

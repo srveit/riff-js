@@ -3,7 +3,8 @@
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
-var Chunk = require('./riff/chunk');
+var Chunk = require('./riff/chunk'),
+  audioConverter = require('./riff/audioConverter');
 require('./riff/riffForm');
 require('./riff/factChunk');
 require('./riff/zstrChunk');
@@ -32,5 +33,10 @@ require('./riff/fmtChunk');
  * @param {string} spec.id - four-character code that identifies
  * @returns {Chunk} - chunk of the appropriate class
  */
+function convertToUlaw(buffer) {
+  var pcmFile = Chunk.createChunkFromBuffer({contents: buffer}),
+    ulawFile = audioConverter.toUlaw(pcmFile);
+  return ulawFile.contents;
+}
 exports.createChunkFromBuffer = Chunk.createChunkFromBuffer;
 exports.createChunkWithId = Chunk.createChunkWithId;
