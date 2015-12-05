@@ -1,5 +1,5 @@
 {
-  "name": "riff",
+  "name": "riff-parser",
   "version": "0.9.0",
   "description": "JavaScript library to encode and decode RIFF formatted files.",
   "main": "riff.js",
