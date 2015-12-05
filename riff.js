@@ -40,3 +40,4 @@ function convertToUlaw(buffer) {
 }
 exports.createChunkFromBuffer = Chunk.createChunkFromBuffer;
 exports.createChunkWithId = Chunk.createChunkWithId;
+exports.convertToUlaw = convertToUlaw;

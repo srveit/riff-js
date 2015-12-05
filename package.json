@@ -2,7 +2,7 @@
   "name": "riff",
   "version": "0.9.0",
   "description": "JavaScript library to encode and decode RIFF formatted files.",
-  "main": "index.js",
+  "main": "riff.js",
   "scripts": {
     "test": "./test/run.sh"
   },
