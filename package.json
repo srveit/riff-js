@@ -1,8 +1,8 @@
 {
-  "name": "riff",
-  "version": "0.9.0",
+  "name": "riff-parser",
+  "version": "1.0.1",
   "description": "JavaScript library to encode and decode RIFF formatted files.",
-  "main": "index.js",
+  "main": "riff.js",
   "scripts": {
     "test": "./test/run.sh"
   },
@@ -17,14 +17,28 @@
     "audio",
     "library"
   ],
-  "author": "Stephen R. Veit <srveit@veitconsulting.com> (http://stephenveit.com/)",
+  "author": "Stephen R. Veit <srveit@veitconsulting.com> (http://veitconsulting.com/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/srveit/riff-js/issues"
   },
   "homepage": "https://github.com/srveit/riff-js/wiki",
   "devDependencies": {
-    "jasmine": "^2.2.1"
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-jasmine": "^2.2.1",
+    "gulp-jslint": "^0.2.2",
+    "gulp-jsonlint": "^1.1.1",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-shell": "^0.5.1",
+    "gulp-watch": "^4.2.4",
+    "jasmine": "^2.2.1",
+    "jasmine-spec-reporter": "^2.4.0",
+    "jsdoc": "^3.3.1",
+    "jshint": "^2.8.0",
+    "jslint": "^0.9.1",
+    "lodash": "^3.10.1",
+    "q": "^1.4.1"
   },
-  "readme": "# riff-js\nJavascript library for encoding and decoding RIFF format files.\n"
+  "readme": "# riff-parser\nJavascript library for encoding and decoding RIFF format files.\n"
 }
