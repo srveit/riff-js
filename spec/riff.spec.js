@@ -9,6 +9,7 @@ var riff = require('../riff'),
   path = require('path'),
   Q = require('q'),
   readFile = Q.nfbind(fs.readFile),
+  writeFile = Q.nfbind(fs.writeFile),
   fixtures = path.resolve('.', 'spec/fixtures');
 describe('riff', function () {
   var chunk;
@@ -95,35 +96,37 @@ describe('riff', function () {
     });
   });
   describe('convertToUlaw', function () {
-    var ulawFile, expectedUlawFile, setupFailed;
-    beforeEach(function (done) {
-      setupFailed = false;
-      readFile(fixtures + '/sample2.wav')
-        .then(function (pcmFileContents) {
-          ulawFile = riff.convertToUlaw(pcmFileContents);
-        })
-        .then(function () {
-          return readFile(fixtures + '/sample2u.wav');
-        })
-        .then(function (ulawFileContents) {
-          expectedUlawFile =
-            riff.createChunkFromBuffer({contents: ulawFileContents});
-        })
-        .catch(function (errors) {
-          console.log('errors', errors);
-          setupFailed = true;
-        })
-        .finally(done);
-    });
-    it('should read fixtures successfully', function (done) {
-      expect(setupFailed).toBe(false);
-      done();
-    });
-    it('should have pcmFile', function (done) {
-      _.forEach(ulawFile.contents, function (byte, i) {
-        expect(byte).toBe(expectedUlawFile.contents[i]);
+    describe('from buffer', function () {
+      var ulawFile, expectedUlawFile, setupFailed;
+      beforeEach(function (done) {
+        setupFailed = false;
+        readFile(fixtures + '/sample2.wav')
+          .then(function (pcmFileContents) {
+            ulawFile = riff.convertToUlaw(pcmFileContents);
+          })
+          .then(function () {
+            return readFile(fixtures + '/sample2u.wav');
+          })
+          .then(function (ulawFileContents) {
+            expectedUlawFile =
+              riff.createChunkFromBuffer({contents: ulawFileContents});
+          })
+          .catch(function (errors) {
+            console.log('errors', errors);
+            setupFailed = true;
+          })
+          .finally(done);
       });
-      done();
+      it('should read fixtures successfully', function (done) {
+        expect(setupFailed).toBe(false);
+        done();
+      });
+      it('should have pcmFile', function (done) {
+        _.forEach(ulawFile.contents, function (byte, i) {
+          expect(byte).toBe(expectedUlawFile.contents[i]);
+        });
+        done();
+      });
     });
   });
   describe('parseRiffFile', function () {

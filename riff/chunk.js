@@ -266,7 +266,11 @@ function registerChunkConstructor(id, chunkConstructor) {
 function createChunkFromBuffer(args) {
   var id, offset = args.offset || 0;
   if (args.contents.length >= offset + 8) {
-    id = args.contents.toString('ascii', offset, offset + 4);
+    if (Buffer.isBuffer(args.contents)) {
+      id = args.contents.toString('ascii', offset, offset + 4);
+    } else {
+      id = args.contents.slice(offset, offset + 4);
+    }
   } else {
     id = '';
   }
