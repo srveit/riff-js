@@ -185,6 +185,10 @@ describe('ListChunk', function () {
       });
       done();
     });
+    it('should have a description', function (done) {
+      expect(chunk.description()).toBe("LIST('    ')");
+      done();
+    });
     describe('when adding a chunk', function () {
       var subChunk;
       beforeEach(function (done) {

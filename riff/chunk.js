@@ -32,6 +32,7 @@ function createChunk(spec) {
     length,
     offset,
     contents,
+    specContents,
     isJunk,
     data,
     /**
@@ -56,6 +57,7 @@ function createChunk(spec) {
      * Writes a four byte size to the buffer
      * @name Chunk#writeSize
      * @function
+     * @private
      * @param {number} [size] - the size of the chunk not including the
      *   chunk ID and size. Defaults to 0.
      * @param {number} [offset] - byte position of first byte of size in
@@ -63,7 +65,6 @@ function createChunk(spec) {
      */
     writeSize = function (size, offset) {
       size = size || 0;
-      offset = offset || 0;
       contents.writeUInt32LE(size, offset);
     },
     /**
@@ -91,10 +92,7 @@ function createChunk(spec) {
      * @returns {string} decoded string
      */
     decodeString = function (start, end) {
-      if (Buffer.isBuffer(contents)) {
-        return contents.toString('ascii', start, end);
-      }
-      return '';
+      return contents.toString('ascii', start, end);
     },
     /**
      * Returns a string with a given number of spaces
@@ -140,7 +138,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'bufferLength', {
     get: function () {
-      return contents ? contents.length : 0;
+      return contents.length;
     }
   });
   /**
@@ -150,7 +148,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'id', {
     get: function () {
-      return isJunk ? 'JUNK' : that.decodeString(0, 4);
+      return isJunk ? 'JUNK' : decodeString(0, 4);
     }
   });
   /**
@@ -160,7 +158,7 @@ function createChunk(spec) {
    */
   Object.defineProperty(that, 'size', {
     get: function () {
-      if (Buffer.isBuffer(contents) && !isJunk) {
+      if (!isJunk) {
         return contents.readUInt32LE(4);
       }
       return Math.max(that.bufferLength - 8, 0);
@@ -188,19 +186,23 @@ function createChunk(spec) {
   });
 
   spec = spec || {};
-  if (spec.contents) {
+  specContents = spec.contents;
+  if (specContents) {
+    if (!Buffer.isBuffer(specContents)) {
+      specContents = new Buffer(specContents, 'binary');
+    }
     offset = spec.offset || 0;
-    if (spec.contents.length >= offset + 8) {
-      size = spec.contents.readUInt32LE(offset + 4);
-      if (size <= (spec.contents.length - offset - 8)) {
+    if (specContents.length >= offset + 8) {
+      size = specContents.readUInt32LE(offset + 4);
+      if (size <= (specContents.length - offset - 8)) {
         length = size + 8 + (size % 2); // make sure length is even
-        contents = spec.contents.slice(offset, offset + length);
+        contents = specContents.slice(offset, offset + length);
       } else {
-        contents = spec.contents.slice(offset);
+        contents = specContents.slice(offset);
         isJunk = true;
       }
     } else {
-      contents = spec.contents.slice(offset);
+      contents = specContents.slice(offset);
       isJunk = true;
     }
   } else {
@@ -218,7 +220,6 @@ function createChunk(spec) {
   }
 
   that.writeId = writeId;
-  that.writeSize = writeSize;
   that.appendData = appendData;
   that.decodeString = decodeString;
   that.dataDescription = dataDescription;

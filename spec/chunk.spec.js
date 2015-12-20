@@ -120,6 +120,20 @@ describe('Chunk', function () {
         done();
       });
     });
+    describe('and data array is appended', function () {
+      beforeEach(function (done) {
+        chunk.appendData([new Buffer(7), new Buffer(5)]);
+        done();
+      });
+      it('should have increased bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(20);
+        done();
+      });
+      it('should have increased size', function (done) {
+        expect(chunk.size).toBe(12);
+        done();
+      });
+    });
   });
   describe('createChunkFromBuffer', function () {
     describe('with no offset', function () {
@@ -174,6 +188,68 @@ describe('Chunk', function () {
       });
       it('should have a size', function (done) {
         expect(chunk.size).toBe(3);
+        done();
+      });
+    });
+    describe('with string contents', function () {
+      var myConstructor;
+      beforeEach(function (done) {
+        var contents = new Buffer(21);
+        contents.write('mcla', 10, 4, 'ascii');
+        contents.writeUInt32LE(3, 14);
+        myConstructor = function (spec) {
+          var that = Chunk.createChunk(spec);
+          return that;
+        };
+        Chunk.registerChunkConstructor('mcla', myConstructor);
+        chunk = Chunk.createChunkFromBuffer({contents: contents.toString('binary'), offset: 10});
+        done();
+      });
+      it('should exist', function (done) {
+        expect(chunk).not.toBeUndefined();
+        done();
+      });
+      it('should have a id', function (done) {
+        expect(chunk.id).toBe('mcla');
+        done();
+      });
+      it('should have bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(12);
+        done();
+      });
+      it('should have a size', function (done) {
+        expect(chunk.size).toBe(3);
+        done();
+      });
+    });
+    describe('with an offset greater than contents size', function () {
+      var myConstructor;
+      beforeEach(function (done) {
+        var contents = new Buffer(21);
+        contents.write('mcla', 10, 4, 'ascii');
+        contents.writeUInt32LE(3, 14);
+        myConstructor = function (spec) {
+          var that = Chunk.createChunk(spec);
+          return that;
+        };
+        Chunk.registerChunkConstructor('mcla', myConstructor);
+        chunk = Chunk.createChunkFromBuffer({contents: contents, offset: 18});
+        done();
+      });
+      it('should exist', function (done) {
+        expect(chunk).not.toBeUndefined();
+        done();
+      });
+      it('should have a JUNK id', function (done) {
+        expect(chunk.id).toBe('JUNK');
+        done();
+      });
+      it('should have bufferLength', function (done) {
+        expect(chunk.bufferLength).toBe(3);
+        done();
+      });
+      it('should have a size', function (done) {
+        expect(chunk.size).toBe(0);
         done();
       });
     });

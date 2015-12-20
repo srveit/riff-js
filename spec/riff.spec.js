@@ -3,7 +3,13 @@
  * @copyright Stephen R. Veit 2015
  */
 'use strict';
-var riff = require('../riff');
+var riff = require('../riff'),
+  fs = require('fs'),
+  _ = require('lodash'),
+  path = require('path'),
+  Q = require('q'),
+  readFile = Q.nfbind(fs.readFile),
+  fixtures = path.resolve('.', 'spec/fixtures');
 describe('riff', function () {
   var chunk;
   describe('new chunk with parameters', function () {
@@ -86,6 +92,80 @@ describe('riff', function () {
     it('should have a cbSize of 0', function (done) {
       expect(chunk.cbSize).toBe(0);
       done();
+    });
+  });
+  describe('convertToUlaw', function () {
+    var ulawFile, expectedUlawFile, setupFailed;
+    beforeEach(function (done) {
+      setupFailed = false;
+      readFile(fixtures + '/sample2.wav')
+        .then(function (pcmFileContents) {
+          ulawFile = riff.convertToUlaw(pcmFileContents);
+        })
+        .then(function () {
+          return readFile(fixtures + '/sample2u.wav');
+        })
+        .then(function (ulawFileContents) {
+          expectedUlawFile =
+            riff.createChunkFromBuffer({contents: ulawFileContents});
+        })
+        .catch(function (errors) {
+          console.log('errors', errors);
+          setupFailed = true;
+        })
+        .finally(done);
+    });
+    it('should read fixtures successfully', function (done) {
+      expect(setupFailed).toBe(false);
+      done();
+    });
+    it('should have pcmFile', function (done) {
+      _.forEach(ulawFile.contents, function (byte, i) {
+        expect(byte).toBe(expectedUlawFile.contents[i]);
+      });
+      done();
+    });
+  });
+  describe('parseRiffFile', function () {
+    var returnedError, parsedFile;
+    beforeEach(function (done) {
+      returnedError = undefined;
+      parsedFile = undefined;
+      done();
+    });
+    describe('with valid file', function () {
+      beforeEach(function (done) {
+        riff.parseRiffFile(fixtures + '/sample2.wav', function (err, file) {
+          returnedError = err;
+          parsedFile = file;
+          done();
+        });
+      });
+      it('should parse file successfully', function (done) {
+        expect(returnedError).toBe(null);
+        done();
+      });
+      it('should return parsed file', function (done) {
+        expect(parsedFile.id).toBe('RIFF');
+        done();
+      });
+    });
+    describe('with invalid file', function () {
+      beforeEach(function (done) {
+        riff.parseRiffFile('does-not-exist', function (err, file) {
+          returnedError = err;
+          parsedFile = file;
+          done();
+        });
+      });
+      it('should return and error', function (done) {
+        expect(returnedError).not.toBe(null);
+        done();
+      });
+      it('should not return parsed file', function (done) {
+        expect(parsedFile).toBeUndefined();
+        done();
+      });
     });
   });
 });

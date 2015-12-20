@@ -49,9 +49,7 @@ function linear2ulaw(sample) {
   exponent = exponentLookup[(sample >> 7) & 0xFF];
   mantissa = (sample >> (exponent + 3)) & 0x0F;
   ulawbyte = ~(sign | (exponent << 4) | mantissa);
-  if (ulawbyte === 0) {
-    ulawbyte = 0x02;        /* optional CCITT trap */
-  }
+  ulawbyte = 256 + ulawbyte;
   /*jslint bitwise: false */
   return ulawbyte;
 }
@@ -75,7 +73,7 @@ function toUlaw(pcmFile) {
 
   while (i > 0) {
     i -= 1;
-    ulawAudio[i] = linear2ulaw(pcmAudio.readUInt16LE(i * 2));
+    ulawAudio[i] = linear2ulaw(pcmAudio.readInt16LE(i * 2));
   }
 
   ulawData = chunk.createChunk({
