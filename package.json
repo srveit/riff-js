@@ -24,22 +24,22 @@
   },
   "homepage": "https://github.com/srveit/riff-js/wiki",
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "gulp": "gulpjs/gulp#4.0",
-    "gulp-istanbul": "^0.10.3",
+    "gulp-istanbul": "^1.1.2",
     "gulp-jasmine": "^2.2.1",
-    "gulp-jslint": "^0.2.2",
+    "gulp-jslint": "^1.0.10",
     "gulp-jsonlint": "^1.1.1",
     "gulp-load-plugins": "^1.1.0",
-    "gulp-shell": "^0.5.1",
+    "gulp-shell": "^0.6.3",
     "gulp-watch": "^4.2.4",
     "jasmine": "^2.2.1",
-    "jasmine-spec-reporter": "^2.4.0",
+    "jasmine-spec-reporter": "^4.2.1",
     "jsdoc": "^3.3.1",
     "jshint": "^2.8.0",
-    "jslint": "^0.9.1",
+    "jslint": "^0.11.0",
     "q": "^1.4.1"
   },
   "readme": "# riff-parser\nJavascript library for encoding and decoding RIFF format files.\n"
