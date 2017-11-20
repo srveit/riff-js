@@ -1,4 +1,6 @@
 # riff-js
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/srveit/riff-js.svg)](https://greenkeeper.io/)
 Javascript library for encoding and decoding Resource Interchange File Format (RIFF) data. This includes WAVE files.
 
 References
