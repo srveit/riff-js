@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "gulp": "gulpjs/gulp#4.0",
-    "gulp-istanbul": "^1.1.2",
+    "gulp-istanbul": "^1.1.3",
     "gulp-jasmine": "^2.2.1",
     "gulp-jslint": "^1.0.10",
     "gulp-jsonlint": "^1.1.1",
